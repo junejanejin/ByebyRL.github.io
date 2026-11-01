@@ -1,0 +1,110 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="">快速上手</a><a href="01-世界观.html" class="">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="">三、算法详解</a><a href="04-训推后端.html" class="">四、训推后端详解</a><a href="05-异步与Agentic.html" class="on">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="">附录：关键词查询</a></nav><main><h1>五、异步训练与 Agentic RL</h1><div class="meta"><span class="tag">五、异步训练与 Agentic RL</span><span class="tag">第 5/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-1-Ray">1. Ray 是什么</a><a href="#sec-2-2">2. 同步与异步</a><a href="#sec-3-3-Agentic-RL">3. Agentic RL</a></div>
+<h2 id="sec-1-1-Ray">1. Ray 是什么</h2>
+<p>Ray 是分布式进程编排框架。veRL 用它做三件事：把 worker 进程（actor/rollout/ref/critic）拉起到各张 GPU 上、以 WorkerGroup 为单位远程调用 worker 方法（<code>generate_sequences</code> / <code>update_actor</code> 都是跨进程调用）、传递 DataProto 数据。训练单卡跑不下时的分布式复杂度由 Ray 屏蔽，调度细节见第一章调度层与图 2。</p>
+<h2 id="sec-2-2">2. 同步与异步</h2>
+<p><img alt="同步异步" src="图解/rl-10-同步异步.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-10-同步异步.html">rl-10-同步异步.html</a></p>
+<p>两种执行模式由部署方式决定：</p>
+<ol>
+<li><strong>同步（colocate，训推同卡）</strong>：生成 → 训练 → 权重同步，串行交替。节省卡、无 off-policy 偏差；但训练效率低，长尾样本拖住整批。</li>
+<li><strong>异步（分离部署）</strong>：推理池和训练组各占一组卡。推理攒第 N+1 批的同时，训练更新第 N 批，吞吐显著提高。代价：训练用的权重滞后于生成权重一步（staleness），引入 off-policy 偏差，需要靠 ratio 修正或更大 clip 兜底。
+<strong>partial rollout</strong>：治长尾的手段——不等最长样本生成完，凑满一批可训练样本就先训，未完成的序列下轮接着生成（中断续作）。</li>
+</ol>
+<p class="tip">💡性能优化方面还可以再了解下TransferQueue</p>
+<h2 id="sec-3-3-Agentic-RL">3. Agentic RL</h2>
+<p>前面流程的 rollout 是"一问一答"（单轮生成）；Agentic RL 的 rollout 是<strong>多轮工具调用</strong>：模型输出 → 工具执行（搜索/代码/环境）→ 结果拼回上下文 → 继续生成，循环直到任务完成，整条轨迹（trajectory）算一个 episode，奖励在终点或过程节点给出。</p>
+<p>两者走的是不同路线：</p>
+<ol>
+<li><strong>veRL：框架内置 AgentLoop</strong>——固定的多轮交互循环（模型输出 → 工具执行 → 结果拼回上下文 → 继续生成），工具调用在 rollout 阶段内由框架的循环结构执行（<a href="https://github.com/volcengine/verl/tree/v0.9.1/verl/experimental/agent_loop">verl/experimental/agent_loop</a>，教程 <a href="https://github.com/volcengine/verl/blob/v0.9.1/examples/tutorial/agent_loop_get_started/agent_loop_tutorial.ipynb">agent_loop_tutorial.ipynb</a>）。适合标准的 tool-use 训练，开箱即用，但交互形态是框架规定的。</li>
+<li><strong>Slime：rollout 完全自定义</strong>——训练侧不规定交互形态，用自定义生成函数把<strong>任意 agent workflow 包进 rollout</strong>：多轮工具、沙箱环境、甚至把现成的编码 agent（如 Claude Code）整个当 rollout 环境用——agent 在沙箱里干活，任务完成度当 reward。轨迹由 <strong>TrajectoryManager</strong> 管理生命周期（调度生成、拼装、未完成轨迹续作），异步多轮下轨迹长短不一时靠它组批。</li>
+</ol>
+<p>slime 官方图：<a href="https://github.com/THUDM/slime/blob/main/docs/_static/image/arch.png">架构图（training / rollout / data buffer）</a>、<a href="https://github.com/THUDM/slime/blob/main/docs/_static/image/rl-world-zh.png">RL 世界观图</a>。veRL AgentLoop 官方架构图：<a href="https://github.com/eric-haibin-lin/verl-community/blob/main/docs/agent_loop_architecture.png?raw=true">agent_loop_architecture.png</a>；文档：<a href="https://github.com/volcengine/verl/blob/v0.9.1/docs/advance/agent_loop.rst">docs/advance/agent_loop.rst</a>。</p>
+<p><strong>veRL 给你一个内置的 agent 循环；slime 让你把任何 agent（包括 Claude Code）接进来当环境</strong>——前者标准化省事，后者灵活度是 Agentic RL 里最高的。</p>
+<p>Agentic RL 与第三章算法正交：PPO/GRPO/DAPO/GSPO 照用，变的是 rollout 从单轮变成带工具的多轮轨迹，reward 也变了：普通 RL 评的是答案对不对；Agentic RL 评的是整条任务完成得怎么样，甚至中间每一步工具用得好不好。</p>
+<p class="tip">💡 Agentic RL 面临的常见问题：</p>
+<ol>
+<li>轨迹长短不一 → 组批困难、长尾拖慢整批（TrajectoryManager、partial rollout 治这个）；</li>
+<li>rollout 占比更高：多轮"生成→工具→再生成"，推理时间占比常超 80%，异步部署几乎是必需；</li>
+<li>奖励稀疏/延迟：分数常只在 episode 结束给出，过程奖励（PRM）设计困难；</li>
+<li>上下文超长：多轮拼接后序列暴涨，KV Cache 与前缀复用成为关键；</li>
+<li>工具调用容错：工具异常/超时的轨迹要能中断重试，坏轨迹污染训练数据；</li>
+<li>reward hacking 新形态：模型学会滥用工具（重复调用、绕过验证）骗分；</li>
+<li>off-policy 偏差放大：轨迹生成耗时长，训练时策略已漂移更远，clip 修正压力更大。</li>
+</ol><div class="pager"><a href="04-训推后端.html"><span class="dir">上一篇</span><span class="pt">四、训推后端详解</span></a><a href="06-性能优化.html"><span class="dir">下一篇</span><span class="pt">六、性能优化</span></a></div></main></div></body></html>

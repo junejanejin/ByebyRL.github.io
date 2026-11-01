@@ -1,0 +1,275 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="on">快速上手</a><a href="01-世界观.html" class="">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="">三、算法详解</a><a href="04-训推后端.html" class="">四、训推后端详解</a><a href="05-异步与Agentic.html" class="">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="">附录：关键词查询</a></nav><main><h1>快速上手</h1><div class="meta"><span class="tag">快速上手</span><span class="tag">第 0/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-1-RL">1. RL 关键流程</a><a href="#sec-2-2-RL">2. RL 框架构成</a><a href="#sec-3-3">3. 框架选型</a><a href="#sec-4-4-RL">4. RL 实操</a><a href="#sec-5-5">5. 常用调参</a><a href="#sec-6-">展开</a></div>
+<p class="tip">💡：如果你只需要跑一个RL任务，只需要知道RL的流程/主流框架结构/和如何拉任务和观测指标。</p>
+<p>如果从业务需求出发，RL 框架 → 算法调优调参 → 训推后端原理和选型 → 算法适配/性能调优 → 模型适配 → 算子开发调优，是比较合理的路线。</p>
+<p>学习顺序：</p>
+<ol>
+<li><strong>RL 流程与框架结构</strong>（<a href="01-世界观.html">第一章第 1 节</a>）；</li>
+<li><strong>跑通GRPO</strong>（<a href="02-实战.html">第二章</a>）；</li>
+<li><strong>观测指标</strong>（<a href="01-世界观.html">第一章第 2 节</a>）；</li>
+<li><strong>调参</strong>（<a href="01-世界观.html">第一章第 3 节</a>）；</li>
+<li><strong>算法选型</strong>（<a href="03-算法详解.html">第三章</a>）——GRPO 起步，长推理用 DAPO，大规模/MoE 用 GSPO；</li>
+<li><strong>进阶</strong>：训推后端（第四章）→ 异步与 Agentic RL（第五章）→ 性能优化（第六章）。</li>
+</ol>
+<p>参考视频与文章见第七章，术语查附录。</p>
+<h2 id="sec-1-1-RL">1. RL 关键流程</h2>
+<p>RL（强化学习）：模型经过<strong>推理</strong>生成 response，reward manager 对 response <strong>打分</strong>，<strong>训练</strong>拿到 response 和分数，<strong>计算策略更新量</strong>、<strong>更新权重</strong>，权重同步回推理引擎，<strong>进入新一轮训练</strong></p>
+<p><img alt="RL 训练一步" src="图解/rl-03-rl流程.visual-check.2048x1320.light.png" /></p>
+<p>分五步：<strong>①初始化 → ②推理（生成）→ ③评分 → ④训练（compute logp → 前向 → 反向）→ ⑤权重回传</strong>，循环。展开：<a href="01-世界观.html">第一章 RL 世界观</a>。</p>
+<h2 id="sec-2-2-RL">2. RL 框架构成</h2>
+<p>RL 训练框架由<strong>一个调度层和训推两个引擎</strong>组成，三部分：</p>
+<ol>
+<li><strong>调度层</strong>（veRL + Ray）：编排全流程；</li>
+<li><strong>推理引擎</strong>（vLLM/SGLang）：生成 response；</li>
+<li><strong>训练引擎</strong>（FSDP/Megatron）：算 loss 更新权重。</li>
+</ol>
+<p><img alt="RL 训推框架全景" src="图解/rl-01-verl架构.visual-check.2048x1320.light.png" /></p>
+<h2 id="sec-3-3">3. 框架选型</h2>
+<p><strong>RL 框架：</strong></p>
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>选择</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只跑 SFT</td>
+<td>LLaMA-Factory / ms-swift</td>
+</tr>
+<tr>
+<td>功能与模型支持最全</td>
+<td>veRL</td>
+</tr>
+<tr>
+<td>轻量、二次开发、Agentic</td>
+<td>Slime</td>
+</tr>
+<tr>
+<td>大规模异步 + Agentic 全套</td>
+<td>ROLL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>训练后端：</strong></p>
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>选择</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小参数量 dense</td>
+<td>FSDP</td>
+</tr>
+<tr>
+<td>大参数量/MoE/极致性能</td>
+<td>Megatron</td>
+</tr>
+</tbody>
+</table>
+<p><strong>推理后端：</strong></p>
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>选择</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生态兼容最广</td>
+<td>vLLM</td>
+</tr>
+<tr>
+<td>多轮/agent/组采样</td>
+<td>SGLang</td>
+</tr>
+</tbody>
+</table>
+<p>展开：<a href="02-实战.html">第二章第 1 节</a>（八维对比矩阵与决策树）。</p>
+<h2 id="sec-4-4-RL">4. RL 实操</h2>
+<table>
+<thead>
+<tr>
+<th>步</th>
+<th>动作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>拉取代码</td>
+<td><code>git clone verl &amp;&amp; uv sync</code></td>
+<td>v0.9.1，依赖由 uv.lock 锁定</td>
+</tr>
+<tr>
+<td>2</td>
+<td>数据集格式转换</td>
+<td><code>python examples/data_preprocess/gsm8k.py</code></td>
+<td>产出 train/test parquet</td>
+</tr>
+<tr>
+<td>3</td>
+<td>下载模型</td>
+<td><code>huggingface-cli download Qwen/Qwen3-8B</code></td>
+<td>基座模型</td>
+</tr>
+<tr>
+<td>4</td>
+<td>启动训练</td>
+<td><code>bash examples/ppo_trainer/run_qwen3_8b_fsdp.sh</code></td>
+<td>首跑先缩规模：batch 32、response 1024、10 步验证链路</td>
+</tr>
+<tr>
+<td>5</td>
+<td>监控</td>
+<td>观察每一步训练指标</td>
+<td>wandb 面板，关注以下曲线</td>
+</tr>
+</tbody>
+</table>
+<p>入门观察指标：</p>
+<table>
+<thead>
+<tr>
+<th>曲线（wandb）</th>
+<th>正常</th>
+<th>出问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>critic/rewards/mean</code></td>
+<td>持续爬升</td>
+<td>骤降 → 查截断率；跌至随机水平 → 查权重同步</td>
+</tr>
+<tr>
+<td><code>actor/entropy</code></td>
+<td>缓慢下降</td>
+<td>快速下降 = 回答趋同，学习将停滞</td>
+</tr>
+<tr>
+<td><code>response_length/clip_ratio</code></td>
+<td>&lt; 5%</td>
+<td>偏高 = 回答被截断，reward 受截断损失 → 放开长度</td>
+</tr>
+</tbody>
+</table>
+<p>logpdiff 第一遍应 ≈ 0（数值噪声级）；第一遍就到 1e-2 以上说明权重同步或数值路径有问题。</p>
+<p>展开：<a href="02-实战.html">第二章 RL 实战</a>。</p>
+<h2 id="sec-5-5">5. 常用调参</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OOM</td>
+<td>调整切分（TP/PP 分担单卡显存）、减 batchsize、offload、重计算等</td>
+</tr>
+<tr>
+<td>更新不充分</td>
+<td>加 <code>ppo_epochs</code>、调 mini/micro 配比</td>
+</tr>
+<tr>
+<td>推理速度慢</td>
+<td>先看 KV cache 有没有打满：<code>gpu_memory_utilization</code> 是否给足、并发（<code>max_num_seqs</code>）是否受限、日志有无 preemption；KV 打满仍慢再调分块预填与引擎参数</td>
+</tr>
+</tbody>
+</table>
+<p>展开：<a href="01-世界观.html">第一章第 3 节</a>；性能手段见<a href="06-性能优化.html">第六章</a>。</p>
+<h2 id="sec-6-">展开</h2>
+<ul>
+<li><a href="01-世界观.html">一、RL 世界观</a></li>
+<li><a href="02-实战.html">二、RL 实战</a></li>
+<li><a href="03-算法详解.html">三、算法详解</a></li>
+<li><a href="04-训推后端.html">四、训推后端详解</a></li>
+<li><a href="05-异步与Agentic.html">五、异步训练与 Agentic RL</a></li>
+<li><a href="06-性能优化.html">六、性能优化</a></li>
+<li><a href="07-参考资料.html">七、学习参考文档</a></li>
+</ul><div class="pager"><span></span><a href="01-世界观.html"><span class="dir">下一篇</span><span class="pt">一、RL 世界观</span></a></div></main></div></body></html>

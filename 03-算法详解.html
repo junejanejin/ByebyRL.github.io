@@ -1,0 +1,265 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="">快速上手</a><a href="01-世界观.html" class="">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="on">三、算法详解</a><a href="04-训推后端.html" class="">四、训推后端详解</a><a href="05-异步与Agentic.html" class="">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="">附录：关键词查询</a></nav><main><h1>三、算法详解</h1><div class="meta"><span class="tag">三、算法详解</span><span class="tag">第 3/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-1">1. 四个算法的演进与核心区别</a><a href="#sec-2-2-GRPO">2. GRPO 详解：模型角色与数据切分</a><a href="#sec-3-3">3. 对比表</a><a href="#sec-4-4">4. 怎么选</a></div>
+<p>四个算法的演进关系：</p>
+<ol>
+<li><strong>PPO</strong> 是起点：4 个模型协同，更新稳定但显存开销最大；</li>
+<li><strong>GRPO = PPO 砍掉 critic（value 网络）</strong>：用组内均值替代价值估计，省一个同规模模型；</li>
+<li><strong>DAPO</strong> 改采样与裁剪细节、放开探索——解决熵塌缩、零梯度批次、长序列稀释；</li>
+<li><strong>GSPO</strong> 把裁剪从 token 级改到序列级——解决"奖励是序列级、裁剪是 token 级"的粒度不匹配；</li>
+<li>DAPO 与 GSPO 改的是不同部位、互不冲突，可组合使用（DAPO+GSPO）。</li>
+</ol>
+<p><img alt="算法演进：PPO → GRPO → DAPO / GSPO" src="图解/rl-05-算法演进.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-05-算法演进.html">rl-05-算法演进.html</a></p>
+<h2 id="sec-1-1">1. 四个算法的演进与核心区别</h2>
+<ol>
+<li><strong>PPO</strong>：需要 4 个模型。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>作用</th>
+<th>更新？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Actor（策略）</td>
+<td>生成 response</td>
+<td><strong>训练更新</strong></td>
+</tr>
+<tr>
+<td>Critic（价值）</td>
+<td>评估状态价值，算优势（GAE）</td>
+<td><strong>训练更新</strong></td>
+</tr>
+<tr>
+<td>Reference（参考）</td>
+<td>冻结，算 KL 散度，防策略偏离太远</td>
+<td>冻结</td>
+</tr>
+<tr>
+<td>Reward</td>
+<td>给 response 打分</td>
+<td>冻结</td>
+</tr>
+</tbody>
+</table>
+<p>核心流程：Actor 生成样本 → Reward 打分 → Critic 评估价值 → 算优势与 PPO loss（含 KL 约束）→ 更新 Actor 和 Critic。关键：<strong>只有 Actor 和 Critic 更新，Reference 与 Reward 冻结，4 个模型同时占显存</strong>。贵主要贵在 Critic：与 Actor 同规模，<strong>多占一倍显存、多一倍计算</strong>。</p>
+<ol>
+<li>
+<p><strong>GRPO</strong>：砍掉 Critic——同一 prompt 采 G 条 response，<code>A = (r − mean) / std</code> 用组内统计当 baseline（3 个模型）。省一个与 Actor 同规模的模型；代价：组全对/全错时梯度为零。</p>
+</li>
+<li>
+<p><strong>DAPO</strong>：GRPO 上放开探索的四个改动（2 个模型：Actor + Reward）：</p>
+<p>(a). <strong>Clip-Higher</strong>：非对称裁剪，上限放宽——核心创新，鼓励高价值 token 探索；
+(b). <strong>动态采样</strong>：重新采样直到组内同时含正确与错误（过滤全对/全错）；
+(c). <strong>过长奖励塑形</strong>：对超长回答惩罚，防截断投机；
+(d). <strong>去 KL + token 级 loss 平均</strong>：去掉 KL 惩罚换探索空间，长序列不被稀释。</p>
+<p class="tip">💡 <strong>长序列稀释是什么</strong>：GRPO 原版 loss 按"序列平均"聚合——每条 response 不论长短，对 loss 的权重相同。一条 512 token 的短回答和一条 8192 token 的长回答贡献一样大，但训练信号摊在每个 token 上，长回答中每个 token 分到的信号只有短回答的 1/16——<strong>序列越长，单个 token 的错误对 loss 的影响被摊得越薄</strong>。长推理任务（数学/代码的推理链动辄几千 token）中模型某一步犯的错因为序列太长，纠正力度不足。DAPO 改为 token 级平均：所有 token 平等计权，长序列不再稀释学习信号。</p>
+</li>
+<li>
+<p><strong>GSPO</strong>：解决粒度不匹配——<strong>reward/advantage 本来是序列级</strong>（一条 response 一个分），<strong>此前的裁剪却在 token 级</strong>（每个 token 各自 clip，长序列 token 级偏移会累积，序列整体策略可能已偏很远）。GSPO 把序列内 token ratio 平均成<strong>序列级 ratio</strong>、整条序列统一 clip——优化粒度与奖励粒度对齐。大规模/MoE 训练更稳（Qwen3 采用）。</p>
+</li>
+</ol>
+<p>DAPO 与 GSPO 正交（一个改采样与裁剪细节、一个改聚合粒度），可组合使用。</p>
+<h2 id="sec-2-2-GRPO">2. GRPO 详解：模型角色与数据切分</h2>
+<p>GRPO：同一 prompt 采样 G 条 response，reward 打分后在组内比较算出优势（Advantage），actor 按优势更新（ref 冻结、算 KL 防跑偏），循环。</p>
+<p>三个模型角色：</p>
+<ol>
+<li><strong>actor</strong>：策略模型，唯一被更新的对象，生成和训练都用它。</li>
+<li><strong>ref（reference）</strong>：冻结的初始模型。KL(π_actor‖π_ref) 作约束，防 actor 为刷 reward 偏离初始模型；跑偏表现：格式崩坏、复读、胡言。KL 位置两种：loss 内（<code>use_kl_loss=True</code>）或 reward 内扣分（<code>kl_in_reward</code>）。</li>
+<li><strong>critic（value 网络/价值模型，同一概念三个叫法）</strong>：输入当前状态、输出一个标量——按当前策略走下去预期能拿多少总奖励（V(s)）。PPO 用它当 baseline 算优势（GAE）；<strong>GRPO 不用</strong>——同一 prompt 采样 G 个回答（<code>rollout.n = G</code>），<code>advantage = (r_i − mean(G)) / (std(G) + 1e-8)</code>，同组所有 token 共享。同组回答同题共难度，均值即该题基线。省一个与 actor 同规模模型的显存与计算。</li>
+</ol>
+<p><img alt="PPO → GRPO：模型角色与更新循环" src="图解/rl-06-grpo更新.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-06-grpo更新.html">rl-06-grpo更新.html</a></p>
+<p><strong>batch 的三层切分</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>名字</th>
+<th>是什么</th>
+<th>约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>train_batch_size</code></td>
+<td>一步的全局批（prompt 数）</td>
+<td>决定一步数据量与耗时</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>ppo_mini_batch_size</code></td>
+<td>每次更新的数据块，可重复 <code>ppo_epochs</code> 遍</td>
+<td>必须 ≤ train_batch_size</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ppo_micro_batch_size</code></td>
+<td>块内一次进 GPU 的分片</td>
+<td>由显存反推，OOM 先减半它</td>
+</tr>
+</tbody>
+</table>
+<p>数据的计算方式：图 2（第一章）的"评分"与"compute logp"阶段整批计算；"训练"阶段按 mini_batch 切块、每块内按 micro_batch 分片做前向和反向。</p>
+<p><img alt="update_actor 双层循环：内层如何驱动外层" src="图解/rl-07-更新双层循环.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-07-更新双层循环.html">rl-07-更新双层循环.html</a></p>
+<p>update_actor 的双层循环：外层 mini_batch（×k 块、整批可重复 <code>ppo_epochs</code> 遍）→ 内层 micro_batch（显存决定一片多大，逐片"前向②作差 → 算 loss → 反向累积梯度"，块末 <code>optimizer.step()</code> 更新 θ）。同批多遍时 ratio 会逐遍偏离 1、clip 开始生效，这是正常现象。</p>
+<h2 id="sec-3-3">3. 对比表</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>PPO</th>
+<th>GRPO</th>
+<th>DAPO</th>
+<th>GSPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ref（冻结·KL）</td>
+<td>要</td>
+<td>要</td>
+<td><strong>不要（去 KL）</strong></td>
+<td>要（可选）</td>
+</tr>
+<tr>
+<td>critic</td>
+<td>要（GAE）</td>
+<td>不要，组内均值</td>
+<td>不需要</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>reward</td>
+<td>RM 打分</td>
+<td>打分（组内比较）</td>
+<td>verify 对答案</td>
+<td>打分</td>
+</tr>
+<tr>
+<td>裁剪</td>
+<td>token 级，对称 1±ε</td>
+<td>token 级，对称</td>
+<td>token 级，<strong>非对称</strong>（clip-higher）</td>
+<td><strong>序列级</strong></td>
+</tr>
+<tr>
+<td>采样</td>
+<td>固定组</td>
+<td>固定组</td>
+<td><strong>动态采样</strong>（过滤全对全错）</td>
+<td>固定组</td>
+</tr>
+<tr>
+<td>loss 聚合</td>
+<td>token 级</td>
+<td>序列平均</td>
+<td><strong>token 级平均</strong></td>
+<td>序列级</td>
+</tr>
+<tr>
+<td>KL</td>
+<td>reward 内</td>
+<td>loss 或 reward</td>
+<td><strong>去掉</strong>，改过长惩罚</td>
+<td>可选</td>
+</tr>
+<tr>
+<td>修的病</td>
+<td>—</td>
+<td>value 网贵</td>
+<td>熵塌缩 / 零梯度 / 长序列稀释</td>
+<td>长序列 token 裁剪震荡</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-4-4">4. 怎么选</h2>
+<ul>
+<li>资源受限、通用任务 → GRPO 起步</li>
+<li>长推理（数学/代码）、需要探索 → DAPO</li>
+<li>大规模、MoE、稳定性优先 → GSPO（或 DAPO+GSPO 组合）</li>
+<li>已有 critic 训练管线的老系统 → PPO</li>
+</ul>
+<p>veRL 中的切换：<code>algorithm.adv_estimator</code>（advantage 计算器，<code>core_algos.py</code> 注册了 grpo/dapo 等）+ loss 变体注册（<code>register_policy_loss</code>）。切换通常只是配置项与 loss 名称，不动训练循环。</p>
+<p class="tip">💡 LoRA、MOPD 等其他算法和训练范式不做赘述</p><div class="pager"><a href="02-实战.html"><span class="dir">上一篇</span><span class="pt">二、RL 实战</span></a><a href="04-训推后端.html"><span class="dir">下一篇</span><span class="pt">四、训推后端详解</span></a></div></main></div></body></html>

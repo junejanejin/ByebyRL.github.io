@@ -1,0 +1,303 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="">快速上手</a><a href="01-世界观.html" class="on">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="">三、算法详解</a><a href="04-训推后端.html" class="">四、训推后端详解</a><a href="05-异步与Agentic.html" class="">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="">附录：关键词查询</a></nav><main><h1>一、RL 世界观</h1><div class="meta"><span class="tag">一、RL 世界观</span><span class="tag">第 1/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-1-RL-veRL">1. RL 框架全景（以 veRL 为例）</a><a href="#sec-2-1-1-RL" class="sub">1.1 RL 流程：五个阶段</a><a href="#sec-3-2-RL">2. RL 训练指标学习</a><a href="#sec-4-3-RL">3. RL 训练调参</a></div>
+<p class="tip">💡：主流的RL框架有VERL/Slime/ROLL等，考虑通用，功能全，更新快等因素，选择VERL为例做说明，但VERL也有它的劣势：不够轻量化，二次开发难度高。</p>
+<p>RL框架的作用是调度，算法与训推功能集成，是后训练和强化学习任务的入口，但是在真实项目场景，我们会遇到新模型适配，训推性能优化和新算法的开发适配前两项的工作重点就会落到训推后端（章节04），或者涉及框架与后端的联合开发，对能力要求更高。</p>
+<h2 id="sec-1-1-RL-veRL">1. RL 框架全景（以 veRL 为例）</h2>
+<p>RL（强化学习）：模型经过<strong>推理</strong>生成 response，reward manager 对 response <strong>打分</strong>，<strong>训练</strong>拿到 response 和分数，<strong>计算策略更新量</strong>、<strong>更新权重</strong>，权重同步回推理引擎，<strong>进入新一轮训练</strong></p>
+<p><strong>veRL 架构</strong>
+RL 训练框架由<strong>一个调度层和训推两个引擎</strong>组成：</p>
+<ol>
+<li><strong>调度层</strong>（<a href="https://github.com/volcengine/verl">veRL</a> + <a href="https://github.com/ray-project/ray">Ray</a>）编排全流程：起 worker 进程、<code>DataProto</code> 传数据、调 <code>reward_manager</code> 打分、每步权重同步回推理引擎。
+   <code>RayPPOTrainer.fit()</code> 驱动训练循环（<a href="https://github.com/volcengine/verl/blob/v0.9.1/verl/trainer/ppo/ray_trainer.py">verl/trainer/ppo/ray_trainer.py</a>）；<code>ActorRolloutRefWorker</code>（<a href="https://github.com/volcengine/verl/blob/v0.9.1/verl/workers/engine_workers.py">verl/workers/engine_workers.py</a>）一个进程承载了 actor 与 rollout 两个角色。</li>
+<li><strong>推理引擎</strong>生成 response；生成时的采样概率不用于训练（原因见 1.1 第 1 步）。
+   <a href="https://github.com/vllm-project/vllm">vLLM</a>：PagedAttention 分页 KV + continuous batching，通用吞吐与生态最广；<a href="https://github.com/sgl-project/sglang">SGLang</a>：RadixAttention 前缀缓存，多轮/agent 场景吞吐强。</li>
+<li><strong>训练引擎</strong>对 (prompt, response) 前向算 logp 和 loss、反向按 loss 的<strong>梯度</strong>算出参数调整量；<strong>更新方向由 advantage 决定，幅度由梯度与学习率决定</strong>。
+   <a href="https://github.com/pytorch/pytorch">FSDP</a>：PyTorch 原生，DP 切分，适合小参数量 dense；<a href="https://github.com/NVIDIA/Megatron-LM">Megatron-LM</a>：TP/PP/EP 全并行，大规模、长序列首选。</li>
+</ol>
+<p><img alt="RL 训推框架全景" src="图解/rl-01-verl架构.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-01-verl架构.html">rl-01-verl架构.html</a></p>
+<p><strong>模型适配</strong>：
+  - <strong>推理侧</strong>（vLLM 或 SGLang）：模型支持自带（model registry），veRL 不改模型、只做权重同步；
+  - <strong>训练侧</strong>（FSDP 或 Megatron）：
+    - 选 FSDP：直接用 HF transformers 实现，权重即 HF 格式，零适配；
+    - 选 Megatron：Megatron-Core（mcore）有自己的权重格式——加载 HF 权重前先做 HF→mcore 转换（veRL 内置转换器加载时自动执行），<a href="https://github.com/volcengine/verl/tree/v0.9.1/verl/models">verl/models</a> 提供模型实现与 logp/MoE 补丁；保存下来的是 mcore 分片格式，给推理/评测/发布用需转回 HF。</p>
+<p><strong>权重同步（resharding）</strong>：训推之间的权重传输。训练侧与推理侧的权重切分布局不同——FSDP 按 DP 切分，Megatron 按 TP/PP/EP 切分，vLLM/SGLang 按 TP（MoE 可加 EP）切分。每步训练后，权重按推理引擎的切分布局重排，再写入推理引擎。</p>
+<p>权重传输方案：</p>
+<p class="tip">💡：权重传输方案的选择主要考虑传输速度和显存进行选择，常规拉任务选默认就好。</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>做法</th>
+<th>veRL 支持度</th>
+<th>好处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>disk（落盘→转换→加载）</td>
+<td>存档转格式后从磁盘加载</td>
+<td>✅ 存档/换后端/发布路径（不进每步循环，慢）</td>
+<td>通用、可跨引擎</td>
+</tr>
+<tr>
+<td>broadcast</td>
+<td>训练组把参数 broadcast 到推理组（NCCL/gloo）</td>
+<td>v0.x 经典分离方案；v0.9 新架构主线未见</td>
+<td>实现简单、通用</td>
+</tr>
+<tr>
+<td>ZMQ+IPC 分桶直传</td>
+<td>训推同机：分桶经 ZMQ+CUDA IPC/共享内存直传（<code>bucketed_weight_transfer.py</code>，桶大小 <code>update_weights_bucket_megabytes</code>）</td>
+<td>✅ v0.9 colocate 主线</td>
+<td>不落盘、不经集合通信库，延迟低</td>
+</tr>
+<tr>
+<td>delta_sharded 增量</td>
+<td>只传本步变化的分片，ZMQ/CUDA-IPC 到 vLLM checkpoint patch loader（WeightTransferEngine）</td>
+<td>✅ v0.9</td>
+<td>通信量最小</td>
+</tr>
+<tr>
+<td>P2P 分片 resharding</td>
+<td>按推理侧目标分片点对点直传</td>
+<td>部分分离部署方案</td>
+<td>通信量比全量小</td>
+</tr>
+</tbody>
+</table>
+<p><strong>veRL 核心组件</strong></p>
+<p><img alt="veRL 核心组件" src="图解/rl-02-架构树.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-02-架构树.html">rl-02-架构树.html</a></p>
+<p>veRL 的五个核心组件（源码模块）：</p>
+<ul>
+<li><strong>trainer</strong>：<code>verl/trainer/ppo</code>——<code>fit()</code> 训练循环，算法无关；</li>
+<li><strong>workers</strong>：<code>verl/workers</code>——<code>ActorRolloutRefWorker</code> 承载推理侧（rollout 生成）、<code>TrainingWorker</code> 承载训练执行，并封装 reward_manager；其内的 <strong>WorkerGroup</strong> 把算法控制流从 Ray RPC、rank 切分和结果收集中解耦出来；</li>
+<li><strong>DataProto</strong>：<code>verl/protocol.py</code>——训推两侧统一的数据容器，带分片/搬运语义（chunk、union、repeat），batch 在训推两侧的切分与传输都由它承担；</li>
+<li><strong>models</strong>：Megatron 侧适配与权重转换；</li>
+<li><strong>utils</strong>：tracking 指标与 checkpoint。</li>
+</ul>
+<p>VeRL 外接四个引擎（FSDP/Megatron/vLLM/SGLang），是外部仓库，由 workers 挂接。算法支持（PPO/GRPO/DAPO/GSPO 等），通过 <code>adv_estimator</code> 与 <code>policy_loss</code> 注册名、clip 范围 / KL 系数与位置 / 采样策略等配置灵活修改，不动训练循环。</p>
+<h3 id="sec-2-1-1-RL">1.1 RL 流程：五个阶段</h3>
+<p>一个训练 step 的五个阶段：<strong>① 初始化 → ② 推理·生成 → ③ 评分 → ④ 训练（compute logp → 前向 → 反向loss→优化器更新）→ ⑤ 权重更新回传</strong>，循环；各阶段属于哪个引擎见图 2 的阶段分区。</p>
+<p><img alt="RL 训练一步的旅程：五个阶段" src="图解/rl-03-rl流程.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-03-rl流程.html">rl-03-rl流程.html</a></p>
+<p>训练的数据是推理生成的 <strong>(prompt, response) + 分数</strong>。训练更新的核心机制是<strong>对比两次token概率</strong>：训练引擎先算基准概率 <code>old_log_prob</code>；更新阶段每遍前向再算当前概率 <code>logp</code>（<strong>第 5 步·前向②</strong>：更新中权重在变，每遍的 logp 都不同）。<code>ratio = exp(logp − old_log_prob)</code> 度量就就是当前策略偏离采样策略的幅度，loss 由 ratio 与 reward 共同构成。</p>
+<p class="tip">💡梳理了下模型训练过程中每个参数的计算和更新过程，参数的含义要掌握！！！：</p>
+<pre><code>输入 state（= prompt）
+    ↓
+model(θ) → logits → probs → action（采样出 response 的每个 token）
+    ↓
+reward + critic(value) → advantage A（GRPO 无 critic，用组内均值）
+    ↓
+A + log_prob → loss（ratio = exp(logp − old_logp)，clip 限幅在 1±ε）
+    ↓
+loss.backward() → grad（A 的符号定方向；|A| 越大梯度越大）
+    ↓
+optimizer.step() → 更新 θ（θ ← θ − η·grad）
+</code></pre>
+<p class="tip">💡以下方法，从ray_trainer 进入到VERL的训推后端实现中即可看到</p>
+<ol>
+<li><strong>生成</strong>：推理引擎 <code>generate_sequences()</code> 按 logits 采样出 response。</li>
+<li>VeRL里采样概率默认不用做 old_log_prob：vLLM 算子与训练引擎不同，同样权重的 logits 有数值差，策略未变但是 ratio 偏离了；</li>
+<li><strong>评分</strong>：<code>reward_manager</code>（<a href="https://github.com/volcengine/verl/blob/v0.9.1/verl/workers/reward_manager/naive.py">naive.py</a> 的 <code>NaiveRewardManager</code>）对每条 response 给一个分 <code>r_i</code>：可验证任务（数学/代码）规则核对答案，开放任务 RM 打分。</li>
+<li><strong>compute logp（前向①）</strong>：训练引擎对 (prompt, response) 前向，算出 <code>old_log_prob</code>（<code>_compute_old_log_prob()</code>）作为更新前的基准。</li>
+<li>ref 同步前向算 <code>ref_log_prob</code>（<code>_compute_ref_log_prob()</code>）供 KL；无 ref 配置（DAPO 去 KL，<code>use_reference_policy=False</code>）则跳过，loss 无 KL 项。</li>
+<li><strong>组内比较算Advantage</strong>：同一 prompt 的 G 条 response，优势Advantage<code>A_i = (r_i − mean) / std</code>（<code>compute_advantage()</code>）。</li>
+<li>比同组好 → A&gt;0；差 → A&lt;0；A 广播到该 response 所有 token；</li>
+<li>KL 位置为 reward（<code>kl_in_reward</code>）时：先从 r_i 扣 KL（<code>apply_kl_penalty</code>）再算 A。</li>
+<li><strong>前向② + 反向</strong>：<code>update_actor()</code> 对同一批数据可重复 <code>ppo_epochs</code> 遍。</li>
+<li>前向②：得当前 logp，<code>logpdiff = logp − old_log_prob</code>（= log ratio），<code>ratio = exp(logpdiff)</code>；</li>
+<li>loss = −min(ratio·A, clip(ratio, 1±ε)·A)（<code>compute_policy_loss()</code>，<a href="https://github.com/volcengine/verl/blob/v0.9.1/verl/trainer/ppo/core_algos.py">core_algos.py</a>）；<code>use_kl_loss=True</code> 时 KL 加在此处；</li>
+<li>反向：按 loss 计算参数调整量，优化器更新权重。</li>
+<li><strong>保存与权重同步</strong>：<code>update_actor()</code> 后按 <code>save_freq</code> 条件存档（<code>_save_checkpoint()</code>），随后 <code>checkpoint_manager.update_weights()</code> 把新权重同步回推理引擎，进入下一步。</li>
+</ol>
+<h2 id="sec-3-2-RL">2. RL 训练指标学习</h2>
+<p><strong>效果类</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标（veRL 日志名）</th>
+<th>含义</th>
+<th>正常形态</th>
+<th>异常与处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>critic/rewards/mean</code></td>
+<td>平均奖励，学习效果总览</td>
+<td>初期低位，随后爬升</td>
+<td>骤降 → 查 clip_ratio 与 entropy；跌至随机水平 → 怀疑权重同步失败</td>
+</tr>
+<tr>
+<td><code>response_length/mean</code></td>
+<td>平均回答长度</td>
+<td>随能力上升缓慢增长</td>
+<td>突涨 = reward hacking（靠冗长刷分），检查评分规则</td>
+</tr>
+<tr>
+<td><code>response_length/clip_ratio</code></td>
+<td>截断比例（触及 max_response_length）</td>
+<td>&lt; 5%</td>
+<td>偏高 → 回答没说完，或触发过长惩罚拉低 reward；放开长度</td>
+</tr>
+<tr>
+<td><code>actor/entropy</code></td>
+<td>输出多样性</td>
+<td>缓慢下降</td>
+<td>持续快速下降 = 熵塌缩（回答趋同），学习将停滞；降采样温度或调 KL 系数</td>
+</tr>
+<tr>
+<td><code>actor/kl_loss</code></td>
+<td>与 ref 的偏离</td>
+<td>小幅非零</td>
+<td>过大 = 跑偏；恒 0 = KL 约束没生效（配置错误）</td>
+</tr>
+<tr>
+<td><code>prompt_length/mean</code></td>
+<td>平均提示长度</td>
+<td>与数据集分布一致</td>
+<td>突变 = 数据管线问题</td>
+</tr>
+</tbody>
+</table>
+<p><strong>训练稳定性类</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+<th>正常形态</th>
+<th>异常与处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actor/pg_loss</code></td>
+<td>策略损失</td>
+<td>小幅波动</td>
+<td>居高不下且 reward 不涨 = 更新无效，查 ratio 是否全程被裁剪</td>
+</tr>
+<tr>
+<td><code>actor/grad_norm</code></td>
+<td>单步参数更新幅度</td>
+<td>平稳</td>
+<td>突然尖峰 = 学习率过大或奖励异常值</td>
+</tr>
+<tr>
+<td>logpdiff（<code>logp − old_log_prob</code>）</td>
+<td>两个 logp 的差。</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>veRL 里两个 logp 都是训练侧前向算的</strong>，所以这个差只反映<strong>策略本身变了多少</strong>：第一遍 ≈ 0（正常基线在万分位，1e-4 噪声级），后续遍慢慢变大；第一遍就到 1e-2 以上 = 权重同步或数值路径出问题 | <strong>有的框架直接用 rollout logprobs（推理引擎返回的概率）当基准</strong>，这时 logpdiff 比的是训推两个引擎的差异——反过来可以用它定位训推不一致问题 |</p>
+<p><strong>性能类</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+<th>正常形态</th>
+<th>异常与处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timing/gen</code>、<code>timing/step</code></td>
+<td>推理 / 整步耗时</td>
+<td>推理占 60–80% 正常</td>
+<td>推理占比更高 → 推理是瓶颈，加 rollout 卡或调 batch（性能手段见第六章）</td>
+</tr>
+</tbody>
+</table>
+<p>常见排查：<strong>reward 下降 + 截断率上升 → 回答触及 <code>max_response_length</code> 触发截断/惩罚</strong>。放开长度后 reward 恢复即为此原因。</p>
+<h2 id="sec-4-3-RL">3. RL 训练调参</h2>
+<p>配置文件：<a href="https://github.com/volcengine/verl/blob/v0.9.1/verl/trainer/config/ppo_trainer.yaml">verl/trainer/config/ppo_trainer.yaml</a></p>
+<ul>
+<li><strong>batch 配比</strong>：<code>train_batch_size</code>（prompt 数）× <code>rollout.n</code>（= G，组大小）= 一步生成的 response 条数；一步的真实规模由 token 数决定（条数 × <code>max_response_length</code>），调吞吐看 token 不看条数。<code>ppo_mini_batch_size</code> 常取 train_batch_size 的 1/2 ~ 1/4；<code>ppo_micro_batch_size</code> 由显存反推，OOM 先减半。</li>
+<li><strong>模型切分</strong>：FSDP 后端按 DP 切（参数分片到卡，每卡过不同数据），长序列可加 SP（序列并行）；Megatron 后端配 TP / PP / EP / CP。</li>
+<li><strong>显存不够的手段</strong>（按需组合）：调整切分（TP/PP 分担单卡显存，需改并行布局）、减 batchsize（<code>ppo_micro_batch_size</code> 等）、offload（<code>param_offload</code> / <code>optimizer_offload</code>，参数/优化器状态用完卸回内存）、重计算（activation checkpointing，不存中间激活、用时重算）等。</li>
+<li><strong>序列长度</strong>：<code>max_prompt_length</code> 超长部分<strong>左截断</strong>（保留问题尾部）；<code>max_response_length</code> 直接决定回答上限，长推理任务给不足会直接损失 reward。</li>
+<li><strong>推理显存预留</strong>：<code>gpu_memory_utilization</code> 是 vLLM 可用显存比例。colocate（训推同卡）常用 0.5–0.6 给训练侧留；分离部署可到 0.85+。</li>
+<li><strong>权重转换</strong>：训练存的是训练引擎格式（Megatron 分片），推理/评测/发布要 HF 格式，靠 checkpoint 转换器互转。换后端必须过这一步，否则精度静默错误。</li>
+<li><strong>断点续训</strong>：<code>save_freq</code> 每隔 N step 存档；<code>resume_mode: auto</code> 从最近存档恢复，<code>resume_from_path</code> 指定存档。不配置则中断后无法恢复。</li>
+</ul><div class="pager"><a href="00-快速上手.html"><span class="dir">上一篇</span><span class="pt">快速上手</span></a><a href="02-实战.html"><span class="dir">下一篇</span><span class="pt">二、RL 实战</span></a></div></main></div></body></html>

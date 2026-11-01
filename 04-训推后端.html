@@ -1,0 +1,140 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="">快速上手</a><a href="01-世界观.html" class="">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="">三、算法详解</a><a href="04-训推后端.html" class="on">四、训推后端详解</a><a href="05-异步与Agentic.html" class="">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="">附录：关键词查询</a></nav><main><h1>四、训推后端详解</h1><div class="meta"><span class="tag">四、训推后端详解</span><span class="tag">第 4/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-1">1. 训练后端</a><a href="#sec-2-2">2. 推理后端</a></div>
+<p>RL 训练框架由一个调度层和训推两个引擎组成。训练引擎二选一（FSDP / Megatron），推理引擎二选一（vLLM / SGLang），各引擎的内部并行与选择规则如下。</p>
+<p><img alt="后端选择：什么条件选什么引擎" src="图解/rl-08-后端选择.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-08-后端选择.html">rl-08-后端选择.html</a></p>
+<h2 id="sec-1-1">1. 训练后端</h2>
+<p><strong>FSDP（Fully Sharded Data Parallel）</strong>：数据并行——每卡跑不同数据；<strong>切模型参数/梯度/优化器状态</strong>：非计算时段保持分片（每卡只存 1/N），前向/反向到某层时 <strong>all-gather</strong> 把该层完整参数聚合回来、用完即弃；反向梯度通过 <strong>reduce-scatter</strong> 归约、每卡只收到自己负责的分片。通信 = all-gather + reduce-scatter 交替。配置面小，HF 模型直接可用。长序列可开 SP（切序列）。</p>
+<p>适用：小参数量 dense 模型（7B–70B 常见）、快速适配。</p>
+<p><strong>Megatron-LM</strong>：NVIDIA 的大模型训练库，四种切分各切模型的不同维度、可组合：</p>
+<p><img alt="四种切分各切哪一维" src="图解/rl-09-切分维度.visual-check.2048x1320.light.png" /></p>
+<p><strong>交互版</strong>：<a href="图解/rl-09-切分维度.html">rl-09-切分维度.html</a></p>
+<ol>
+<li><strong>TP（张量并行）——切算子权重矩阵的行/列</strong>（<code>nn.Linear</code> → <code>ColumnParallelLinear</code> / <code>RowParallelLinear</code>），多卡同算一层。通信：<strong>all-reduce</strong>（每层前向反向各一次）→ 限卡内 NVLink 域（通常 8 卡）最优，跨机 TP 代价陡增。好处：单层显存按卡数直接减。场景：模型单卡放不下时的卡内扩展。</li>
+<li><strong>PP（流水线并行）——切 Transformer Layer</strong>：前半段层一卡、后半段一卡，数据像流水线流过。通信：<strong>P2P</strong>（只在段界传激活，量小，跨机友好）。<strong>存在流水线气泡（pipeline bubble）</strong>：各段轮流等待形成空闲，气泡占比 ≈ (p−1)/(m+p−1)；<strong>micro batch 填充</strong>：一个 batch 切成 m 个微批依次注入，微批越多气泡占比越小（代价是激活积压占显存）。好处：通信量在四种切分里最小。场景：跨机扩展、TP 到顶后的继续切分。</li>
+<li><strong>EP（专家并行）——切专家维（MoE）</strong>：不同专家放不同卡，token 按路由 all-to-all 分发。好处：MoE 参数大而激活稀疏，专家分卡后单卡显存可控。场景：MoE 模型。</li>
+<li><strong>CP（上下文并行）——切序列维（长度）</strong>：QKV 序列分段、attention 分头多卡算（SP 同为切序列：LayerNorm/Dropout 等序列维算子分片，all-gather/reduce-scatter 通信）。好处：激活显存随序列长线性下降。场景：32K+ 长序列训练的必选项。</li>
+</ol>
+<p>适用：<strong>跨机大规模（数百 B）、长序列、MoE、训速优先的场景，Megatron 比 FSDP 更有优势</strong>；代价是适配成本高（mcore 转换 + 配置复杂）。</p>
+<p class="tip">💡 除了解切分的含义和场景，不同切分的通信也不同，可以大致了解下</p>
+<h2 id="sec-2-2">2. 推理后端</h2>
+<p>两个引擎都是高吞吐 LLM 推理服务，核心差异在 KV Cache 与调度：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>vLLM</th>
+<th>SGLang</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>适用场景</td>
+<td>无共享上下文的批量生成——每次请求独立一问一答（聊天 API、批量采样、离线跑数据）</td>
+<td>多轮对话、agent、RL 组采样——请求间共享上文</td>
+</tr>
+<tr>
+<td>模型支持</td>
+<td><strong>种类最全</strong>：LLM/多模态/新模型通常第一时间可用</td>
+<td>主流 LLM/MoE/VLM 齐备，Qwen/GLM 系新模型跟进快</td>
+</tr>
+<tr>
+<td>硬件支持</td>
+<td>NVIDIA / ROCm / CPU / TPU</td>
+<td>NVIDIA 为主</td>
+</tr>
+<tr>
+<td>吞吐</td>
+<td>无共享前缀时与 SGLang 接近（版本互有胜负）；带量化时占优（FP8/INT8/Marlin kernel 最全）</td>
+<td>有共享前缀时显著更高：Radix 缓存免重复 prefill，省的是整段 prefill 计算</td>
+</tr>
+<tr>
+<td>时延</td>
+<td>无前缀时 TTFT 稳定（chunked prefill 削尖峰）；投机解码配置最全</td>
+<td>前缀命中时 TTFT 极低（直接复用 KV，跳过 prefill）</td>
+</tr>
+<tr>
+<td>RL 集成</td>
+<td>colocate 下可休眠让显存（<code>sleep_replicas</code>）</td>
+<td>生成可中断/续作（partial rollout 依赖）、rollout server 路径顺</td>
+</tr>
+</tbody>
+</table>
+<p>吞吐与时延的差异取决于<strong>有没有可复用的前缀</strong>：没有共享前缀时两者性能接近，此时 vLLM 的量化（FP8/INT8 kernel 最全）和投机解码配置更完备，吞吐更高；有共享前缀时（RL 组采样、多轮、agent），SGLang 用 Radix 缓存跳过重复的 prefill 计算，吞吐更高、首 token 时延更低。<strong>vLLM 的性能优势 = 量化与投机解码配置更全；SGLang 的性能优势 = 前缀缓存免重复计算</strong>。</p>
+<p><strong>选择规则</strong>：单轮、无共享前缀 → vLLM；多轮 / 组采样 / agent → SGLang。</p><div class="pager"><a href="03-算法详解.html"><span class="dir">上一篇</span><span class="pt">三、算法详解</span></a><a href="05-异步与Agentic.html"><span class="dir">下一篇</span><span class="pt">五、异步训练与 Agentic RL</span></a></div></main></div></body></html>

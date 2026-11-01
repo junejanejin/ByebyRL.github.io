@@ -1,0 +1,636 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RL 新手入门指导书</title><style>
+:root {
+  --bg:#FFFFFF; --ink:#1D1D1F; --sub:#6E6E73; --line:#D2D2D7; --faint:#F5F5F7;
+  --primary:#0066CC; --accent:#C94000; --code-bg:#F5F5F7;
+}
+* { box-sizing:border-box; }
+body { line-break:strict; word-break:normal; overflow-wrap:break-word; font-kerning:normal; }
+h1, h2, h3, .toc .toc-title, nav .brand { text-wrap:balance; }
+main p, main li, main td, main th { text-wrap:pretty; }
+main { max-inline-size:50rem; }
+html { background:var(--bg); }
+body { margin:0; font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","Helvetica Neue",sans-serif; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; }
+.layout { display:flex; min-height:100vh; }
+nav { width:260px; border-right:1px solid var(--line); padding:28px 16px; position:sticky; top:0; height:100vh; overflow:auto; background:var(--faint); }
+nav .brand { font-weight:700; font-size:15px; letter-spacing:-.01em; }
+nav .sub { font-size:12px; color:var(--sub); margin:4px 0 22px; }
+nav a { display:block; padding:6px 12px; color:var(--ink); text-decoration:none; font-size:14px; border-radius:6px; }
+nav a:hover { background:#E8E8ED; }
+nav a.on { background:var(--ink); color:#fff; font-weight:600; }
+nav a.todo { color:#AEAEB2; }
+main { flex:1; max-width:820px; margin:0 auto; padding:44px 36px 80px; }
+.meta { font-size:12px; color:var(--sub); margin:0 0 8px; }
+.meta .tag { display:inline-block; background:var(--code-bg); border-radius:4px; padding:1px 8px; margin-right:6px; }
+.toc { background:var(--faint); border-radius:10px; padding:14px 20px; margin:0 0 28px; font-size:13.5px; }
+.toc .toc-title { font-weight:600; margin-bottom:6px; color:var(--sub); font-size:12px; }
+.toc a { color:var(--ink); text-decoration:none; display:block; padding:3px 0; }
+.toc a:hover { color:var(--primary); }
+.toc a.sub { padding-left:18px; color:var(--sub); }
+h1 { font-size:28px; font-weight:700; letter-spacing:-.015em; line-height:1.25; margin:0 0 6px; }
+h2 { font-size:20px; font-weight:600; letter-spacing:-.012em; line-height:1.3; margin:44px 0 14px; }
+h3 { font-size:16px; font-weight:600; margin:28px 0 10px; }
+p { margin:10px 0 14px; }
+strong { font-weight:600; color:inherit; }
+em { font-style:normal; color:var(--sub); }
+blockquote { margin:14px 0; padding:6px 18px; border-left:3px solid var(--line); color:var(--sub); }
+img { max-width:100%; border-radius:10px; margin:12px 0; }
+code { font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:.86em; background:var(--code-bg); padding:2px 6px; border-radius:5px; }
+pre { background:#1D1D20; border-radius:12px; margin:14px 0; }
+pre code { display:block; padding:15px 17px; overflow:auto; background:none; color:#E6E6E6; font-size:13px; line-height:1.7; }
+a { color:var(--primary); }
+a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px; line-height:1.6; }
+th { text-align:left; font-weight:600; color:var(--sub); border-bottom:1.5px solid var(--ink); padding:7px 14px 7px 0; }
+td { border-bottom:1px solid var(--line); padding:9px 14px 9px 0; vertical-align:top; word-break:break-word; }
+td:first-child, th:first-child { white-space:nowrap; width:1%; padding-right:22px; }
+td:first-child { font-weight:600; }
+td code, th code { word-break:break-all; font-weight:400; }
+hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+.tip { background:#FFF8EE; border-radius:10px; padding:12px 18px; margin:16px 0; font-size:14px; }
+.tip code { background:#F4E9D6; }
+.interactive { font-size:13px; color:var(--sub); margin-top:-4px; }
+.pager { display:flex; justify-content:space-between; gap:14px; margin-top:56px; }
+.pager a { text-decoration:none; color:var(--ink); background:var(--faint); border-radius:10px; padding:10px 16px; max-width:47%; display:block; }
+.pager a:hover { background:#E8E8ED; }
+.pager .dir { font-size:11px; color:var(--sub); display:block; margin-bottom:2px; }
+.pager .pt { font-size:14px; font-weight:600; }
+@media (max-width: 900px) {
+  .layout{flex-direction:column}
+  nav{position:sticky;top:0;width:auto;height:auto;z-index:10;display:flex;align-items:center;gap:2px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+  nav .brand,nav .sub{display:none}
+  nav a{white-space:nowrap;padding:6px 12px;font-size:13px;margin:0}
+  main{padding:20px 16px 60px;max-width:100%}
+}
+@media (max-width: 720px) {
+  body{font-size:15px}
+  h1{font-size:23px} h2{font-size:18px;margin:34px 0 10px}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13px}
+  th:first-child,td:first-child{white-space:normal;width:auto;padding-right:10px}
+  pre{border-radius:8px} pre code{font-size:12px;padding:12px 13px}
+  .tip{padding:10px 13px;font-size:13.5px}
+  .toc{padding:10px 14px;font-size:12.5px}
+  .pager{flex-direction:column} .pager a{max-width:100%}
+  img{border-radius:8px}
+}
+</style></head>
+<body><div class="layout"><nav><div class="brand">RL 新手入门指导书</div><div class="sub">以 veRL 为中心 · v0.9.1</div><a href="00-快速上手.html" class="">快速上手</a><a href="01-世界观.html" class="">一、RL 世界观</a><a href="02-实战.html" class="">二、RL 实战</a><a href="03-算法详解.html" class="">三、算法详解</a><a href="04-训推后端.html" class="">四、训推后端详解</a><a href="05-异步与Agentic.html" class="">五、异步训练与 Agentic RL</a><a href="06-性能优化.html" class="">六、性能优化</a><a href="07-参考资料.html" class="">七、学习参考文档</a><a href="08-附录-关键词查询.html" class="on">附录：关键词查询</a></nav><main><h1>附录：关键词查询</h1><div class="meta"><span class="tag">附录：关键词查询</span><span class="tag">第 8/8 篇</span><span class="tag">veRL v0.9.1</span></div><div class="toc"><div class="toc-title">本页目录</div><a href="#sec-1-">流程基础</a><a href="#sec-2-">概率与更新</a><a href="#sec-3-">模型角色</a><a href="#sec-4-">算法</a><a href="#sec-5-veRL">系统组件（veRL）</a><a href="#sec-6-">并行与显存</a><a href="#sec-7-">训练配置</a><a href="#sec-8-">部署与异步</a><a href="#sec-9-">数据与观测</a></div>
+<h2 id="sec-1-">流程基础</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>prompt</td>
+<td>输入的问题/指令</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>response</td>
+<td>模型生成的回答</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>token</td>
+<td>模型处理的最小文本单元</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>logits</td>
+<td>各候选 token 的得分（未归一化）</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>采样 / temperature / top-p</td>
+<td>从 logits 挑 token 的方式：温度调随机度，top-p 截候选</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>rollout</td>
+<td>推理引擎批量生成 response 的过程</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>step</td>
+<td>一轮"生成→评分→更新"循环</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>episode / trajectory</td>
+<td>一次完整任务过程；Agentic RL 里指多轮工具调用的整条轨迹</td>
+<td>五 3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-2-">概率与更新</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logp / log_prob</td>
+<td>模型给某 token 的对数概率</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>old_log_prob</td>
+<td>更新前的基准概率（采样后、更新前由训练引擎前向算出）</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>ratio</td>
+<td>exp(logp − old_log_prob)，当前策略偏离采样策略的幅度</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>logpdiff</td>
+<td>logp − old_log_prob = log(ratio)，指标表名</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>clip / 裁剪</td>
+<td>把 ratio 限制在 1±ε 内，防单步更新过猛</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>advantage（A）</td>
+<td>reward 经组内比较变形：比同组好为正、差为负，决定更新方向</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>baseline</td>
+<td>advantage 的参照（组均值或 critic 估值）</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>GAE</td>
+<td>PPO 里用 critic 估计 advantage 的方法</td>
+<td>三</td>
+</tr>
+<tr>
+<td>KL 散度</td>
+<td>两个分布的差异度量；约束 actor 不偏离 ref</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>entropy（熵）</td>
+<td>输出多样性；持续下降=熵塌缩</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>policy_loss / pg_loss</td>
+<td>策略损失，训练的直接优化目标</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>反向传播</td>
+<td>按 loss 计算每个参数调整量的过程</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>梯度 / grad_norm</td>
+<td>参数调整的方向与幅度；grad_norm 突增=更新异常</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>优化器 / optimizer.step</td>
+<td>按梯度×学习率真正改权重的环节</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>ppo_epochs</td>
+<td>同一批数据重复更新的遍数</td>
+<td>一 1.1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-3-">模型角色</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>actor</td>
+<td>策略模型，唯一被更新的对象</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>ref / reference</td>
+<td>冻结的初始模型，算 KL 防跑偏；DAPO 去 KL 时可不配</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>critic / value 网络</td>
+<td>价值模型（同一概念）：输入状态、输出预期总奖励 V(s)；PPO 用它算优势，GRPO 不用</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>reward model（RM）</td>
+<td>学习"哪个回答更好"的打分模型；可验证任务用规则替代</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>policy（策略）</td>
+<td>模型当前的生成行为分布</td>
+<td>一</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-4-">算法</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PPO</td>
+<td>clip ratio 限制更新步长 + critic/GAE 的经典算法</td>
+<td>三</td>
+</tr>
+<tr>
+<td>GRPO</td>
+<td>去 critic 的 PPO：组内均值当 baseline</td>
+<td>三</td>
+</tr>
+<tr>
+<td>DAPO</td>
+<td>GRPO 四改良：clip-higher、动态采样、token 级 loss、去 KL</td>
+<td>三</td>
+</tr>
+<tr>
+<td>GSPO</td>
+<td>裁剪从 token 级提到序列级；大规模/MoE 更稳</td>
+<td>三</td>
+</tr>
+<tr>
+<td>DPO</td>
+<td>不用 RL、直接从偏好对训练的对齐方法</td>
+<td>三</td>
+</tr>
+<tr>
+<td>dynamic sampling</td>
+<td>过滤全对/全错组，凑不满继续推理</td>
+<td>三</td>
+</tr>
+<tr>
+<td>clip-higher</td>
+<td>非对称裁剪，上界放宽，防熵塌缩</td>
+<td>三</td>
+</tr>
+<tr>
+<td>reward hacking</td>
+<td>模型钻评分空子刷分（如靠冗长）</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>熵塌缩</td>
+<td>回答趋同、多样性丧失，学习停滞</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>RLVR</td>
+<td>可验证奖励（数学/代码对答案），替代 RM</td>
+<td>一 1.1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-5-veRL">系统组件（veRL）</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ray</td>
+<td>分布式进程编排框架，veRL 用它起 worker、传数据</td>
+<td>一 1 / 五 1</td>
+</tr>
+<tr>
+<td>SingleController</td>
+<td>veRL 的调度层实现（Ray 之上的封装）</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>worker / WorkerGroup</td>
+<td>进程内的角色载体（如 ActorRolloutRefWorker）；WorkerGroup 让 trainer 像调本地函数一样调远端</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>DataProto</td>
+<td>训推两侧统一的数据容器，带分片/搬运语义（chunk/union/repeat）</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>reward_manager</td>
+<td>打分入口（NaiveRewardManager：verify 或 RM）</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>fit()</td>
+<td>RayPPOTrainer 的训练主循环</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>generate_sequences</td>
+<td>推理生成 response 的函数</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>update_actor</td>
+<td>训练更新入口（前向②+反向）</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>checkpoint / 存档</td>
+<td>训练状态快照；save_freq 定间隔，resume 恢复</td>
+<td>一 3</td>
+</tr>
+<tr>
+<td>adv_estimator</td>
+<td>advantage 计算器的配置选择（grpo/gae/…）</td>
+<td>三</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-6-">并行与显存</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DP</td>
+<td>数据并行：各卡不同数据；FSDP 是参数分片版</td>
+<td>四</td>
+</tr>
+<tr>
+<td>TP</td>
+<td>张量并行：切每层权重矩阵的行/列</td>
+<td>四</td>
+</tr>
+<tr>
+<td>PP</td>
+<td>流水线并行：按层切段，各卡一段</td>
+<td>四</td>
+</tr>
+<tr>
+<td>EP</td>
+<td>专家并行：MoE 专家分布到不同卡</td>
+<td>四</td>
+</tr>
+<tr>
+<td>SP / CP</td>
+<td>序列并行/上下文并行：长序列切给多卡算 attention</td>
+<td>一 3</td>
+</tr>
+<tr>
+<td>FSDP</td>
+<td>PyTorch 原生训练引擎（DP 参数分片）</td>
+<td>四</td>
+</tr>
+<tr>
+<td>Megatron-LM / mcore</td>
+<td>NVIDIA 大规模训练库；mcore 是其权重格式（HF↔mcore 需转换）</td>
+<td>四</td>
+</tr>
+<tr>
+<td>all-gather</td>
+<td>从各卡分片收齐完整张量</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>重计算 / activation checkpointing</td>
+<td>不存中间激活、用时重算，省显存换时间</td>
+<td>一 3 / 六</td>
+</tr>
+<tr>
+<td>offload</td>
+<td>参数/优化器状态用完卸回内存</td>
+<td>一 3</td>
+</tr>
+<tr>
+<td>KV Cache</td>
+<td>推理时缓存的 K/V，随并发×序列长线性涨</td>
+<td>六</td>
+</tr>
+<tr>
+<td>PagedAttention</td>
+<td>vLLM 的分页 KV 管理</td>
+<td>四</td>
+</tr>
+<tr>
+<td>RadixAttention</td>
+<td>SGLang 的前缀 KV 树缓存，多轮命中率高</td>
+<td>四</td>
+</tr>
+<tr>
+<td>continuous batching</td>
+<td>请求动态进出批，推理吞吐关键</td>
+<td>四</td>
+</tr>
+<tr>
+<td>preemption / 抢占</td>
+<td>KV 池不够时暂停/重算请求，吞吐骤降的信号</td>
+<td>六</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-7-">训练配置</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train_batch_size</td>
+<td>一步的全局批（prompt 数）</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>ppo_mini_batch_size</td>
+<td>每次更新的数据块（×ppo_epochs 遍）</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>ppo_micro_batch_size</td>
+<td>块内一次进 GPU 的分片（OOM 先减半它）</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>rollout.n（G）</td>
+<td>同一 prompt 采样的回答数=组大小</td>
+<td>三 2</td>
+</tr>
+<tr>
+<td>max_prompt_length / max_response_length</td>
+<td>提示上限（超长左截断）/回答上限（截断吃 reward）</td>
+<td>一 3</td>
+</tr>
+<tr>
+<td>use_kl_loss / kl_in_reward</td>
+<td>KL 挂在 loss 还是扣在 reward（算 adv 前）</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>use_reference_policy</td>
+<td>是否启用 ref 模型；False 则无 KL</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>save_freq / resume_mode</td>
+<td>存档间隔 / 恢复模式（auto 从最近存档续）</td>
+<td>一 3</td>
+</tr>
+<tr>
+<td>gpu_memory_utilization</td>
+<td>推理引擎可用显存比例（colocate 常用 0.5–0.6）</td>
+<td>一 3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-8-">部署与异步</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>colocate</td>
+<td>训推同卡同进程组，串行交替、省卡</td>
+<td>五 2</td>
+</tr>
+<tr>
+<td>分离部署（disaggregated）</td>
+<td>训推各占一组卡，可重叠提吞吐</td>
+<td>五 2</td>
+</tr>
+<tr>
+<td>resharding</td>
+<td>训练切分布局 ↔ 推理切分布局的重排转换</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>权重传输四方案</td>
+<td>同进程直载 / 全量 broadcast / P2P 分片 / 增量 delta_sharded</td>
+<td>一 1</td>
+</tr>
+<tr>
+<td>staleness</td>
+<td>异步下训练用的权重滞后于生成权重</td>
+<td>五 2</td>
+</tr>
+<tr>
+<td>partial rollout</td>
+<td>凑满即训、未完成序列下轮续作，治长尾</td>
+<td>五 2</td>
+</tr>
+<tr>
+<td>PD 分离</td>
+<td>prefill 与 decode 分卡各自批处理</td>
+<td>六</td>
+</tr>
+<tr>
+<td>Agentic RL</td>
+<td>rollout 为多轮工具调用轨迹的 RL</td>
+<td>五 3</td>
+</tr>
+<tr>
+<td>agent loop</td>
+<td>veRL 的多轮交互组件（verl/experimental/agent_loop）</td>
+<td>五 3</td>
+</tr>
+<tr>
+<td>TrajectoryManager</td>
+<td>slime 的轨迹生命周期管理组件</td>
+<td>五 3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sec-9-">数据与观测</h2>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>定义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>parquet</td>
+<td>veRL 训练数据的列存格式</td>
+<td>二 3</td>
+</tr>
+<tr>
+<td>data_source</td>
+<td>数据字段：判分器按它路由</td>
+<td>二 3</td>
+</tr>
+<tr>
+<td>ground_truth</td>
+<td>标准答案字段，verify 判分用</td>
+<td>二 3</td>
+</tr>
+<tr>
+<td>verify</td>
+<td>规则核对答案的判分方式</td>
+<td>一 1.1</td>
+</tr>
+<tr>
+<td>gsm8k / DAPO-Math-17k</td>
+<td>数学数据集：小学难度打链路 / 更难正式实验</td>
+<td>二 3</td>
+</tr>
+<tr>
+<td>wandb / tensorboard</td>
+<td>训练指标面板</td>
+<td>二 5</td>
+</tr>
+<tr>
+<td>critic/rewards/mean</td>
+<td>平均奖励曲线（学没学到）</td>
+<td>一 2</td>
+</tr>
+<tr>
+<td>timing/gen · timing/step</td>
+<td>推理/整步耗时（算推理占比）</td>
+<td>一 2</td>
+</tr>
+</tbody>
+</table><div class="pager"><a href="07-参考资料.html"><span class="dir">上一篇</span><span class="pt">七、学习参考文档</span></a><span></span></div></main></div></body></html>
